@@ -1,0 +1,25 @@
+resource "digitalocean_kubernetes_cluster" "workshop" {
+  name    = "${var.prefix}-workshop"
+  region  = var.region
+  version = "1.28.6-do.0"
+
+  node_pool {
+    name       = "${var.prefix}-workshop-pool"
+    size       = "s-1vcpu-2gb"
+    node_count = 2
+    auto_scale = false
+    tags       = ["workshop"]
+
+    labels = {
+      service  = "workshop"
+      priority = "low"
+    }
+
+    taint {
+      key    = "workloadKind"
+      value  = "database"
+      effect = "NoSchedule"
+    }
+  }
+
+}

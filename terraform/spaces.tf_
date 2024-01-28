@@ -1,0 +1,11 @@
+resource "digitalocean_spaces_bucket" "tf_state" {
+  name   = "${var.prefix}-terraform-state"
+  region = var.region
+
+
+  versioning {
+    enabled = true
+  }
+
+  force_destroy = true
+}
