@@ -2,6 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from database import connect
+from prometheus_client import Counter, generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
+from prometheus_client import start_http_server, REGISTRY
+import prometheus_client
+import time
+
+REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests')
+
+@app.route('/metrics')
+def metrics():
+    return generate_latest(REGISTRY), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 app = FastAPI()
 conn = connect()
@@ -14,6 +24,7 @@ class Item(BaseModel):
 
 @app.get("/")
 def read_root():
+    REQUEST_COUNT.inc()
     return {"status": "OK"}
 
 # Route to create an item
@@ -62,5 +73,7 @@ def delete_item(item_id: int):
 
 if __name__ == "__main__":
     import uvicorn
+
+    start_http_server(8000)
 
     uvicorn.run(app, host="localhost", port=80)
