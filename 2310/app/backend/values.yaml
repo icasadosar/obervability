@@ -100,7 +100,7 @@ affinity: {}
 
 environments:
   - name: MYSQL_HOST
-    value: mariadb.app.svc.cluster.local
+    value: mariadb.default.svc.cluster.local
   - name: MYSQL_USER
     value: root
   - name: MYSQL_PASSWORD
